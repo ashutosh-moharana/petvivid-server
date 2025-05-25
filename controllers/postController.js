@@ -1,4 +1,4 @@
-const PetPost = require("../models/PetPost");
+const PetPost = require("../models/petpost");
 const userModel = require("../models/user");
 const fs = require('fs');
 const path = require('path');
