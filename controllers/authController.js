@@ -30,8 +30,8 @@ const registerUser = async (req, res) => {
         .status(200)
         .cookie("token", token, {
           httpOnly: true, // Good for security
-          sameSite: "lax", 
-          secure: false,
+          sameSite: "none", 
+          secure: true,
         })
         .json({ success: true, message: "User registered !",user:createdUser, token });
     });
@@ -64,8 +64,8 @@ const loginUser = async (req, res) => {
       .status(200)
       .cookie("token", token, {
         httpOnly: true,
-        sameSite: "lax", // Helps with cross-origin in some cases
-        secure: false,
+        sameSite: "none", // Helps with cross-origin in some cases
+        secure: true,
       })
       .json({ success: true, message: "User logged in",user, token });
   } catch (err) {
@@ -79,8 +79,8 @@ const logoutUser = (req, res) => {
   res.cookie("token", "",{
   
     httpOnly: true,
-    sameSite: "lax",
-    secure: false,
+    sameSite: "none",
+    secure: true,
   });
   res.json({ success: true, message: "User logged out successfully !" });
 };
