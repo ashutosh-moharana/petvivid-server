@@ -32,6 +32,7 @@ const registerUser = async (req, res) => {
           httpOnly: true, // Good for security
           sameSite: "none", 
           secure: true,
+          path:"/",
         })
         .json({ success: true, message: "User registered !",user:createdUser, token });
     });
@@ -66,6 +67,7 @@ const loginUser = async (req, res) => {
         httpOnly: true,
         sameSite: "none", // Helps with cross-origin in some cases
         secure: true,
+        path:"/",
       })
       .json({ success: true, message: "User logged in",user, token });
   } catch (err) {
