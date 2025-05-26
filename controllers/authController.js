@@ -33,6 +33,7 @@ const registerUser = async (req, res) => {
           sameSite: "none", 
           secure: true,
           path:"/",
+          maxAge: 7 * 24 * 60 * 60 * 1000
         })
         .json({ success: true, message: "User registered !",user:createdUser, token });
     });
@@ -68,6 +69,7 @@ const loginUser = async (req, res) => {
         sameSite: "none", // Helps with cross-origin in some cases
         secure: true,
         path:"/",
+        maxAge: 7 * 24 * 60 * 60 * 1000
       })
       .json({ success: true, message: "User logged in",user, token });
   } catch (err) {
