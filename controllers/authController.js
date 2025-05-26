@@ -66,7 +66,7 @@ const loginUser = async (req, res) => {
       .status(200)
       .cookie("token", token, {
         httpOnly: true,
-        sameSite: "lax", // Helps with cross-origin in some cases
+        sameSite: "none", // Helps with cross-origin in some cases
         secure: true,
         path:"/",
         maxAge: 7 * 24 * 60 * 60 * 1000
@@ -83,7 +83,7 @@ const logoutUser = (req, res) => {
   res.cookie("token", "",{
   
     httpOnly: true,
-    sameSite: "lax",
+    sameSite: "none",
     secure: true,
   });
   res.json({ success: true, message: "User logged out successfully !" });
