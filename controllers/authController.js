@@ -29,7 +29,7 @@ const registerUser = async (req, res) => {
       res
         .status(200)
         .cookie("token", token, {
-          httpOnly: true, // Good for security
+          httpOnly: false, // Good for security
           sameSite: "none", 
           secure: true,
           path:"/",
@@ -65,7 +65,7 @@ const loginUser = async (req, res) => {
     res
       .status(200)
       .cookie("token", token, {
-        httpOnly: true,
+        httpOnly: false,
         sameSite: "none", // Helps with cross-origin in some cases
         secure: true,
         path:"/",
@@ -82,7 +82,7 @@ const loginUser = async (req, res) => {
 const logoutUser = (req, res) => {
   res.cookie("token", "",{
   
-    httpOnly: true,
+    httpOnly: false,
     sameSite: "none",
     secure: true,
   });
