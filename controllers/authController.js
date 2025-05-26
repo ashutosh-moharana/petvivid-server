@@ -29,12 +29,9 @@ const registerUser = async (req, res) => {
       res
         .status(200)
         .cookie("token", token, {
-          httpOnly: false, // Good for security
+          httpOnly: true, // Good for security
           sameSite: "none", 
           secure: true,
-          path:"/",
-          domain: '.onrender.com',
-          maxAge: 7 * 24 * 60 * 60 * 1000
         })
         .json({ success: true, message: "User registered !",user:createdUser, token });
     });
@@ -66,12 +63,10 @@ const loginUser = async (req, res) => {
     res
       .status(200)
       .cookie("token", token, {
-        httpOnly: false,
-        sameSite: "none", // Helps with cross-origin in some cases
+        httpOnly: true,
+        sameSite: "none", 
         secure: true,
-        path:"/",
-        domain: '.onrender.com',
-        maxAge: 7 * 24 * 60 * 60 * 1000
+        
       })
       .json({ success: true, message: "User logged in",user, token });
   } catch (err) {
@@ -83,10 +78,8 @@ const loginUser = async (req, res) => {
 
 const logoutUser = (req, res) => {
   res.cookie("token", "",{
-  
-    httpOnly: false,
+    httpOnly: true,
     sameSite: "none",
-    domain: '.onrender.com',
     secure: true,
   });
   res.json({ success: true, message: "User logged out successfully !" });
