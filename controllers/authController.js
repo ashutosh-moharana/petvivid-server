@@ -23,20 +23,26 @@ const registerUser = async (req, res) => {
         userpic: null,
       });
 
+      const token = jwt.sign(
+        { email, userid: createdUser._id },
+        process.env.JWT_SECRET
+      );
 
-      const token = jwt.sign({ email ,userid:createdUser._id }, process.env.JWT_SECRET);
-    
       res
         .status(200)
         .cookie("token", token, {
-          httpOnly: true, // Good for security
-          sameSite: "none", 
+          httpOnly: true,
+          sameSite: "none",
           secure: true,
         })
-        .json({ success: true, message: "User registered !",user:createdUser, token });
+        .json({
+          success: true,
+          message: "User registered !",
+          user: createdUser,
+          token,
+        });
     });
   });
-
 };
 
 const loginUser = async (req, res) => {
@@ -58,7 +64,7 @@ const loginUser = async (req, res) => {
         .json({ success: false, message: "Invalid Credentials" });
     }
 
-    const token = jwt.sign({ email ,userid:user._id }, process.env.JWT_SECRET);
+    const token = jwt.sign({ email, userid: user._id }, process.env.JWT_SECRET);
 
     res
       .status(200)
@@ -67,7 +73,7 @@ const loginUser = async (req, res) => {
         sameSite: "none", // Helps with cross-origin in some cases
         secure: true,
       })
-      .json({ success: true, message: "User logged in",user, token });
+      .json({ success: true, message: "User logged in", user, token });
   } catch (err) {
     res
       .status(500)
@@ -76,8 +82,7 @@ const loginUser = async (req, res) => {
 };
 
 const logoutUser = (req, res) => {
-  res.cookie("token", "",{
-  
+  res.cookie("token", "", {
     httpOnly: true,
     sameSite: "none",
     secure: true,
@@ -88,19 +93,21 @@ const logoutUser = (req, res) => {
 const checkAuth = (req, res) => {
   const token = req.cookies.token;
 
-  if (!token) { 
-    return res.status(401).json({ isAuthenticated:false, message: "Unauthorized" });
+  if (!token) {
+    return res
+      .json({ isAuthenticated: false, message: "User Should Logged In" });
   }
 
   jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
     if (err) {
-      return res.status(401).json({ isAuthenticated: false, message: "Unauthorized" });
+      return res
+        .status(401)
+        .json({ isAuthenticated: false, message: "Unauthorized" });
     }
 
-    
-    const user = await userModel.findOne({_id:decoded.userid})
-    
-    res.json({isAuthenticated : true, message: "User is authenticated",user} );
+    const user = await userModel.findOne({ _id: decoded.userid });
+
+    res.json({ isAuthenticated: true, message: "User is authenticated", user });
   });
 };
-module.exports = { registerUser, loginUser, logoutUser,checkAuth };
+module.exports = { registerUser, loginUser, logoutUser, checkAuth };

@@ -51,27 +51,50 @@ const createPost = async (req, res) => {
 };
 
 const updatePost = async (req, res) => {
-  const { ...data } = req.body;
-  let updatedFields = { ...data };
-  if (req.file) {
-    // Find the existing post to get the old image URL
-    const existingPost = await PetPost.findById(req.params.id);
-    // Optionally, delete old image from Cloudinary (if you store public_id)
-    // Upload new image to Cloudinary
-    const result = await cloudinary.uploader.upload(req.file.path, {
-      folder: 'petImages',
-      resource_type: 'image',
+  try {
+    const { ...data } = req.body;
+    let updatedFields = { ...data };
+    
+    if (req.file) {
+      // Find the existing post to get the old image URL
+      const existingPost = await PetPost.findById(req.params.id);
+      if (!existingPost) {
+        return res.status(404).json({ error: "Post not found" });
+      }
+      
+      // Upload new image to Cloudinary
+      const result = await cloudinary.uploader.upload(req.file.path, {
+        folder: 'petImages',
+        resource_type: 'image',
+      });
+      updatedFields.picture = result.secure_url;
+      
+      // Delete local file after upload
+      fs.unlink(req.file.path, (err) => {
+        if (err) console.error('Error deleting local file:', err);
+      });
+    }
+    
+    // Update the post and get the updated document
+    const updatedPost = await PetPost.findOneAndUpdate(
+      { _id: req.params.id },
+      updatedFields,
+      { new: true }
+    );
+    
+    if (!updatedPost) {
+      return res.status(404).json({ error: "Post not found" });
+    }
+    
+    // Return the updated post data
+    res.json({ 
+      message: "Your data has been successfully updated!",
+      post: updatedPost 
     });
-    updatedFields.picture = result.secure_url;
-    fs.unlink(req.file.path, () => {});
-  }
-  let updatedData = await PetPost.findOneAndUpdate(
-    { _id: req.params.id },
-    updatedFields,
-    { new: true }
-  );
-  res.json("Your data has been succesfully updated!");
+}catch(err){
+  console.log(err);
 };
+}
 
 const deletePost = async (req, res) => {
   let user = await userModel.findOne({ email: req.user.email });
