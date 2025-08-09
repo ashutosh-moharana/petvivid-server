@@ -83,11 +83,7 @@ const loginUser = async (req, res) => {
 };
 
 const logoutUser = (req, res) => {
-<<<<<<< HEAD
   res.cookie("token", "", {
-=======
-  res.cookie("token", "",{
->>>>>>> 53c552750525cd42c7627529935a4c55c5b933a7
     httpOnly: true,
     sameSite: "none",
     secure: true,
